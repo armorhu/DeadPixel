@@ -1,20 +1,18 @@
 package
 {
 	import com.agame.deadpixel.GameRoot;
-	import com.agame.deadpixel.Screen;
-
+	
 	import flash.desktop.NativeApplication;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.StageOrientationEvent;
-	import flash.filesystem.File;
 	import flash.geom.Rectangle;
 	import flash.media.AudioPlaybackMode;
 	import flash.media.SoundMixer;
 	import flash.ui.Keyboard;
-
+	
 	import starling.core.Starling;
 	import starling.events.Event;
 
@@ -25,7 +23,13 @@ package
 		public function DeadPixel()
 		{
 			super();
-			trace(File.applicationStorageDirectory.nativePath);
+//			trace(File.applicationStorageDirectory.nativePath);
+//			var s:Shape=new Shape;
+//			s.graphics.beginFill(0xff0000);
+//			s.graphics.drawRect(100, 100, 100, 100);
+//			s.graphics.endFill();
+//			addChild(s);
+//			return;
 			if (stage)
 			{
 				init(null);
@@ -34,8 +38,8 @@ package
 			{
 				addEventListener(flash.events.Event.ADDED_TO_STAGE, init);
 			}
+//			drawMap(9079434, 16711680, 1);
 		}
-
 
 		private function init(evt:flash.events.Event):void
 		{
@@ -63,6 +67,8 @@ package
 			loadingBar.txt.text='LOADING...';
 			loadingBar.x=viewPort.width / 2;
 			loadingBar.y=viewPort.height / 2;
+			loadingBar.width=viewPort.width;
+			loadingBar.scaleY=loadingBar.scaleX;
 			addChild(loadingBar);
 
 			Starling.handleLostContext=true; //android建议处理
@@ -70,6 +76,7 @@ package
 			m_starling.addEventListener(starling.events.Event.ROOT_CREATED, onCreateContext3d);
 			m_starling.simulateMultitouch=false;
 			m_starling.enableErrorChecking=false;
+			m_starling.showStatsAt();
 		}
 
 		/**

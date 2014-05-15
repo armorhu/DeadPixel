@@ -6,7 +6,6 @@ package com.agame.deadpixel
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.filters.ColorMatrixFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 

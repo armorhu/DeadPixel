@@ -10,6 +10,7 @@ package com.agame.deadpixel
 	public class LabelButton extends Sprite
 	{
 		public var textfiled:TextField;
+		public var tiggerHandler:Function;
 
 		public function LabelButton(text:String='', width:Number=128, height:Number=64, size:int=30, color:uint=0x0)
 		{
@@ -31,6 +32,8 @@ package com.agame.deadpixel
 				if (!touch)
 					return;
 				Game.playSound(Game.touch, 0);
+				if (tiggerHandler != null)
+					tiggerHandler();
 				dispatchEventWith(Event.TRIGGERED, true);
 				this.touchPointID=-1;
 			}

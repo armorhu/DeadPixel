@@ -22,7 +22,7 @@
 
 	<!-- The name that is displayed in the AIR application installer.
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->
-	<name>DeadPixel-debug</name>
+	<name>Dead Pixel-debug</name>
 
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
@@ -160,7 +160,13 @@
 		<image732x412></image732x412>
 		<image1024x1024></image1024x1024>
 	</icon> -->
-
+	<icon>
+		<image57x57>icon/icon57.png</image57x57>
+		<image72x72>icon/icon72.png</image72x72>
+		<image76x76>icon/icon76.png</image76x76>
+		<image120x120>icon/icon120.png</image120x120>
+		<image152x152>icon/icon152.png</image152x152>
+	</icon>
 	<!-- Whether the application handles the update when a user double-clicks an update version
 	of the AIR file (true), or the default AIR application installer handles the update (false).
 	Optional. Default false. -->
@@ -282,6 +288,12 @@
 					的 NetworkInfo API-->
 			    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>-->
 			    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>-->
+			    
+			   <application>
+                <activity android:name="com.facebook.LoginActivity"/>
+                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+               </application>
 			</manifest>
 			
 		]]>
@@ -290,11 +302,26 @@
 	<iPhone>
 		<InfoAdditions>
 			<![CDATA[
+			<key>UIPrerenderedIcon</key>
+			<true/>
 			<key>UIDeviceFamily</key>
 			<array>
 				<string>1</string>
 				<string>2</string>
 			</array>
+			<key>CFBundleURLTypes</key>
+			<array>
+				<dict>
+					<key>CFBundleURLName</key>
+						<string>deadpixel.agame.com</string>
+					<key>CFBundleURLSchemes</key>
+					<array>
+						<string>wx55d0681a8a820382</string>
+					</array>
+				</dict>
+			</array>
+			<key>FacebookAppID</key>
+        	<string>{699824396746656}</string>
 		]]>
 		</InfoAdditions>
 		<requestedDisplayResolution>high</requestedDisplayResolution>
