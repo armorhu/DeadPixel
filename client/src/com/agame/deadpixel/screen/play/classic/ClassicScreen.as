@@ -23,7 +23,7 @@ package com.agame.deadpixel.screen.play.classic
 	{
 		public static const SCREEN_ID:String='ClassicScreen';
 
-		private static const MAX_LIFE:int=1;
+		private static const MAX_LIFE:int=3;
 		private var level:int=0;
 		private var levelDisplay:int=0;
 		private var life:int=MAX_LIFE;
@@ -51,6 +51,7 @@ package com.agame.deadpixel.screen.play.classic
 			ui.addChild(this.levelTf);
 
 			this.help=new LabelButton(Lang(TID.tid_help), Game.NON_SCALE_STAGE_WIDTH, NON_SCALE_TITLE_HEIGHT, 30, Game.blue);
+			help.tiggerHandler=Game.shareScreenShot;
 			this.help.textfiled.hAlign=HAlign.RIGHT;
 			ui.addChild(this.help);
 		}
@@ -60,9 +61,9 @@ package com.agame.deadpixel.screen.play.classic
 			// TODO Auto Generated method stub
 			if (this.life == 0)
 				return;
-			if (cell.bounds.contains(cursur.x, cursur.y))
+			if (getCellHitArea(cell).contains(touch.globalX, touch.globalY))
 			{
-				playCheer();
+				playCheer(touch.globalX, touch.globalY);
 				nextLevel();
 			}
 			else

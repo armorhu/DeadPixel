@@ -59,13 +59,14 @@ package com.agame.deadpixel.screen.play.speed
 
 			this.help=new LabelButton(Lang(TID.tid_help), Game.NON_SCALE_STAGE_WIDTH, NON_SCALE_TITLE_HEIGHT, 30, Game.blue);
 			this.help.textfiled.hAlign=HAlign.RIGHT;
+			help.tiggerHandler=Game.shareScreenShot;
 			ui.addChild(this.help);
 		}
 
 		private function set deadPixelNum(value:int):void
 		{
 			_deadPixelNum=value;
-			this.labelDeadPixelNum.text=Lang(TID.tid_title_deadpixel + ' ' + value);
+			this.labelDeadPixelNum.text=Lang(TID.tid_title_deadpixel) + ' ' + value;
 		}
 
 		private function get deadPixelNum():int
@@ -79,6 +80,7 @@ package com.agame.deadpixel.screen.play.speed
 			_timer=0;
 			labelTimer.text=_timer.toFixed(2) + '″';
 			deadPixelNum=MAX_DEAD_PIXEL_NUM;
+			cell.visible=true;
 		}
 
 		override protected function updateCellTexture(texture:Texture):void
@@ -92,6 +94,7 @@ package com.agame.deadpixel.screen.play.speed
 				for (var i:int=0; i < len; i++)
 				{
 					t=new TiledImage(texture);
+					t.visible=false;
 					_cells.push(t);
 					map.addChildAt(t, 1);
 				}
@@ -102,7 +105,8 @@ package com.agame.deadpixel.screen.play.speed
 					_cells[i].texture=texture;
 			}
 		}
-
+		private var _cellColor:uint;
+		private var _brightness:Number;
 
 		override protected function startGame():void
 		{
@@ -110,9 +114,11 @@ package com.agame.deadpixel.screen.play.speed
 			cell.visible=true;
 			Starling.juggler.add(this);
 			//设置坏点的颜色
-			drawMap(light[light.length - 1], colors[int(colors.length * Math.random())], 0.5);
+			_cellColor=dark[dark.length - 1];
+			_brightness=0.4;
+			drawMap(_cellColor, colors[int(colors.length * Math.random())], _brightness);
 			//随机拜访
-			cellSize=cellInitSize / 3;
+			cellSize=cellInitSize / 2;
 			updateRandomArea();
 			var result:Vector.<Point>=genrateRandomPoint(MAX_DEAD_PIXEL_NUM, cellSize);
 			for (var i:int=0; i < MAX_DEAD_PIXEL_NUM; i++)
@@ -211,14 +217,18 @@ package com.agame.deadpixel.screen.play.speed
 			var len:int=_cells.length;
 			for (var i:int=0; i < len; i++)
 			{
-				if (_cells[i].visible && _cells[i].bounds.contains(cursur.x, cursur.y))
+				if (_cells[i].visible && getCellHitArea(_cells[i]).contains(touch.globalX, touch.globalY))
 				{
-					playCheer();
+					playCheer(touch.globalX, touch.globalY);
 					_cells[i].visible=false;
 					deadPixelNum--;
 					if (deadPixelNum == 0)
 					{
 						this.endGame();
+					}
+					else
+					{
+						drawMap(_cellColor, colors[int(colors.length * Math.random())], _brightness);
 					}
 					return;
 				}

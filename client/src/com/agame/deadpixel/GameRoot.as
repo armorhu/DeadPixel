@@ -1,5 +1,8 @@
 package com.agame.deadpixel
 {
+	import com.agame.deadpixel.ane.GameCenterProxy;
+	import com.agame.deadpixel.ane.WechatProxy;
+	import com.agame.deadpixel.screen.play.PlayScreen;
 	import com.agame.deadpixel.screen.play.classic.ClassicScreen;
 	import com.agame.deadpixel.screen.play.sixty.SixtyScreen;
 	import com.agame.deadpixel.screen.play.speed.SpeedScreen;
@@ -8,19 +11,30 @@ package com.agame.deadpixel
 	import com.agame.deadpixel.text.Lang;
 	import com.agame.deadpixel.text.TID;
 	import com.agame.utils.Cookies;
+	import com.agame.utils.SystemUtil;
+	import com.amgame.consts.SystemLanguageDefs;
+	import com.amgame.utils.AppstoreUtils;
+	import com.amgame.utils.BitmapdataUtils;
 	import com.greensock.TimelineMax;
 	import com.greensock.TweenLite;
-
+	
+	import flash.display.BitmapData;
+	import flash.display.PNGEncoderOptions;
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
 	import flash.media.SoundTransform;
 	import flash.system.Capabilities;
-
+	import flash.utils.clearTimeout;
+	import flash.utils.setTimeout;
+	
 	import feathers.controls.ScreenNavigator;
 	import feathers.controls.ScreenNavigatorItem;
 	import feathers.motion.transitions.ScreenFadeTransitionManager;
-	import feathers.themes.MetalWorksMobileTheme;
-
+	
+	import so.cuo.platform.admob.Admob;
+	import so.cuo.platform.admob.AdmobPosition;
+	import so.cuo.platform.admob.AdmobSize;
+	
 	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -29,6 +43,7 @@ package com.agame.deadpixel
 
 	public class GameRoot extends Sprite
 	{
+		public const APP_ID:String='874283385';
 		public var scale:Number;
 		public const NON_SCALE_STAGE_WIDTH:Number=640;
 		public var stageWidth:Number;
@@ -67,7 +82,13 @@ package com.agame.deadpixel
 
 		public function initliaze():void
 		{
-			new MetalWorksMobileTheme(stage);
+//			new MetalWorksMobileTheme(stage);
+			var lang:String=Capabilities.language;
+			if (lang != SystemLanguageDefs.ZH_CN && lang != SystemLanguageDefs.ZH_TW)
+				lang=SystemLanguageDefs.EN;
+
+			GameCenterProxy.setup();
+			TID.init(lang);
 			stage.color=0x0;
 			this.stageWidth=stage.stageWidth;
 			this.stageHeight=stage.stageHeight;
@@ -75,6 +96,7 @@ package com.agame.deadpixel
 
 			assets=new AssetManager;
 			assets.enqueue(File.applicationDirectory.resolvePath('res'));
+			assets.enqueue(File.applicationDirectory.resolvePath('font/' + lang));
 			assets.loadQueue(assetsProgressing);
 		}
 
@@ -90,14 +112,48 @@ package com.agame.deadpixel
 
 		private var screenNavigator:ScreenNavigator;
 		private var screenTransitionManager:ScreenFadeTransitionManager;
-		public var admobSize:Number=100;
+		public var admobSize:Number;
+		private var _admobSize:AdmobSize;
+		private var admob:Admob;
+		public var admob_iphone:String='a153491819ad964';
+		public var admob_ipad:String='a1534a7ec255c50';
+		public var admob_android:String='a1534a7f76632ce';
+
+//		public var admob_iphone:String='ca-app-pub-1942492060626934/7872095803';
+//		public var admob_ipad:String='ca-app-pub-1942492060626934/7872095803';
+//		public var admob_android:String='ca-app-pub-1942492060626934/4779028602';
 		public var screenArea:Rectangle;
 
 		public function assetsReady():void
 		{
 			Cookies.initialize('DeadPixel');
-			TID.init(Capabilities.language);
-			admobSize=100 * scale;
+			WechatProxy.setup('wx55d0681a8a820382');
+
+			admob=Admob.getInstance();
+			if (admob.supportDevice)
+			{
+				admobSize=Admob.BANNER.height;
+				_admobSize=Admob.BANNER;
+				if (SystemUtil.isAndroid())
+					admob.setKeys(admob_android);
+				else if (SystemUtil.isIpad())
+				{
+					admobSize=Admob.IPAD_PORTRAIT.height;
+					_admobSize=Admob.IPAD_PORTRAIT;
+					admob.setKeys(admob_ipad);
+				}
+				else
+					admob.setKeys(admob_iphone);
+				admob.enableTrace=false;
+				admobSize*=2;
+				trace('admobSize....', admobSize);
+				admob.showBanner(_admobSize, AdmobPosition.BOTTOM_CENTER);
+			}
+			else
+			{
+				admobSize=100 * Game.scale;
+			}
+
 			screenArea=new Rectangle(0, 0, stageWidth, stageHeight);
 			screenNavigator=new ScreenNavigator;
 			addChild(screenNavigator);
@@ -145,15 +201,52 @@ package com.agame.deadpixel
 				assets.playSound(name, 0, loops);
 		}
 
+		private var intersititialTimeOut:int;
 
 		public function showScreen(screenID:String):void
 		{
+			if (screenID == ResultScreen.SCREEN_ID)
+			{
+				if (admob.isInterstitialReady())
+					intersititialTimeOut=setTimeout(show, 2000);
+				else
+					admob.cacheInterstitial();
+			}
 			screenNavigator.showScreen(screenID);
+
+			if (screenNavigator.activeScreen is PlayScreen)
+			{
+				if (intersititialTimeOut > 0)
+				{
+					clearTimeout(intersititialTimeOut);
+					intersititialTimeOut=0;
+				}
+			}
+		}
+
+
+		public function show():void
+		{
+			admob.showInterstitial();
+			admob.cacheInterstitial();
 		}
 
 		public function share():void
 		{
 			// TODO Auto Generated method stub
+			WechatProxy.sendLink( //
+				File.applicationDirectory.resolvePath('icon/icon72.png').nativePath, // 
+				AppstoreUtils.getAppDownloadURL(APP_ID), '好虐心的游戏...眼已瞎!', '眼已瞎!', // 
+				WechatProxy.SHARE_TO_ALL_FRIENDS);
+		}
+
+		public function shareScreenShot(msg:String='', title:String=''):void
+		{
+			var bmd:BitmapData=new BitmapData(stage.stageWidth, stage.stageHeight);
+			this.stage.drawToBitmapData(bmd);
+			var imgURL:String=File.applicationStorageDirectory.nativePath + File.separator + 'screen_shot.png';
+			BitmapdataUtils.saveBitmapTo(imgURL, bmd, new PNGEncoderOptions);
+			WechatProxy.sendImage(imgURL, title, msg, WechatProxy.SHARE_TO_ALL_FRIENDS);
 		}
 
 		public function flashDisplayObject(quad:DisplayObject, dutartion:Number=2):void

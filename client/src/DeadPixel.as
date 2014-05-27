@@ -1,7 +1,7 @@
 package
 {
 	import com.agame.deadpixel.GameRoot;
-	
+
 	import flash.desktop.NativeApplication;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
@@ -12,7 +12,7 @@ package
 	import flash.media.AudioPlaybackMode;
 	import flash.media.SoundMixer;
 	import flash.ui.Keyboard;
-	
+
 	import starling.core.Starling;
 	import starling.events.Event;
 
@@ -76,7 +76,7 @@ package
 			m_starling.addEventListener(starling.events.Event.ROOT_CREATED, onCreateContext3d);
 			m_starling.simulateMultitouch=false;
 			m_starling.enableErrorChecking=false;
-			m_starling.showStatsAt();
+//			m_starling.showStatsAt('left', 'center');
 		}
 
 		/**

@@ -40,7 +40,6 @@ package com.agame.deadpixel.screen.play
 
 		//中间是ui层
 		protected var ui:Sprite;
-		protected var cursur:Image;
 
 		//最下面是地图层
 		protected var map:Sprite;
@@ -127,12 +126,6 @@ package com.agame.deadpixel.screen.play
 			//ui
 			ui=new Sprite;
 			addChild(ui);
-			cursur=new Image(Texture.fromBitmapData(new CursorImg));
-			cursur.pivotX=cursur.width / 2 - 3;
-			cursur.pivotY=5;
-			cursur.width=cellInitSize * 2;
-			cursur.height=cellInitSize * 2;
-			ui.addChild(cursur);
 
 			//effect....
 			effect=new Sprite;
@@ -189,8 +182,6 @@ package com.agame.deadpixel.screen.play
 			canvas.y=Game.screenArea.y + titleHeight;
 			canvas.width=Game.screenArea.width;
 			canvas.height=Game.screenArea.height - titleHeight;
-			cursur.x=randomArea.x + randomArea.width / 2;
-			cursur.y=randomArea.y + randomArea.height / 2;
 			cell.width=touchMeStartLabel.width;
 			cell.height=touchMeStartLabel.height;
 			cell.x=touchMeStartLabel.x;
@@ -224,7 +215,6 @@ package com.agame.deadpixel.screen.play
 				else if (touch.phase == TouchPhase.MOVED)
 				{
 					_isMoved=true;
-					movement(touch.globalX - touch.previousGlobalX, touch.globalY - touch.previousGlobalY);
 				}
 			}
 			else //if we get here, we don't have a saved touch ID yet
@@ -247,10 +237,10 @@ package com.agame.deadpixel.screen.play
 			}
 			else if (state == PRE_START)
 			{
-				if (cell.bounds.contains(cursur.x, cursur.y))
+				if (getCellHitArea(cell).contains(touch.globalX, touch.globalY))
 				{
 					state=PLAYING;
-					playCheer();
+					playCheer(touch.globalX, touch.globalY);
 					clearNote();
 					cell.width=cell.height=cellInitSize;
 					touchMeStartLabel.removeFromParent();
@@ -264,12 +254,12 @@ package com.agame.deadpixel.screen.play
 			}
 		}
 
-		public function playCheer():void
+		public function playCheer(px:Number, py:Number):void
 		{
 			Game.playSound(Game.quest_complete, 0);
 			cheerPaticle.start(0.1);
-			cheerPaticle.emitterX=cursur.x;
-			cheerPaticle.emitterY=cursur.y;
+			cheerPaticle.emitterX=px;
+			cheerPaticle.emitterY=py;
 		}
 
 		protected function startGame():void
@@ -284,22 +274,6 @@ package com.agame.deadpixel.screen.play
 		protected function touchHandler(touch:Touch):void
 		{
 		}
-
-		private function movement(offsetX:Number, offsetY:Number):void
-		{
-			// TODO Auto Generated method stub
-			cursur.x+=offsetX * 1.25;
-			cursur.y+=offsetY * 1.25;
-			if (cursur.x < randomArea.x)
-				cursur.x=randomArea.x;
-			else if (cursur.x > randomArea.x + randomArea.width)
-				cursur.x=randomArea.x + randomArea.width;
-			if (cursur.y < randomArea.y)
-				cursur.y=randomArea.y;
-			else if (cursur.y > randomArea.y + randomArea.height)
-				cursur.y=randomArea.y + randomArea.height;
-		}
-
 
 		/**
 		 * 根据颜色值，生成texture.
@@ -399,7 +373,7 @@ package com.agame.deadpixel.screen.play
 			return Math.round(dpi * (mm / 25.4));
 		}
 
-		public function flashQuad(rect:Rectangle, duration:Number=1):void
+		public function flashQuad(rect:Rectangle, duration:Number=0.6):void
 		{
 			var _failedTimeline:TimelineMax;
 			var _quad:Quad;
@@ -419,6 +393,23 @@ package com.agame.deadpixel.screen.play
 			_failedTimeline.append(TweenLite.to(_quad, 0.1, {color: 0xffffff}));
 			_failedTimeline.repeat(duration / 0.2);
 			_failedTimeline.play();
+		}
+
+		private static const sHitArea:Rectangle=new Rectangle;
+
+		public function getCellHitArea(cell:TiledImage):Rectangle
+		{
+			if (sHitArea.width == 0)
+				sHitArea.width=sHitArea.height=100 * Game.scale;
+			var bounds:Rectangle=cell.bounds;
+			if (bounds.width > sHitArea.width)
+				return bounds;
+			else
+			{
+				sHitArea.x=bounds.x + bounds.width / 2 - sHitArea.width / 2;
+				sHitArea.y=bounds.y + bounds.height / 2 - sHitArea.height / 2;
+			}
+			return sHitArea;
 		}
 	}
 }

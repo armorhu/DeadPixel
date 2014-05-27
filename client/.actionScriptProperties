@@ -40,6 +40,9 @@
       <libraryPathEntry kind="3" linkType="1" path="/aGame/bin/aGame.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/amGame/bin/amGame.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="1" linkType="1" path="lib"/>
+      <libraryPathEntry kind="5" linkType="2" path="ane/wechat_2.ane"/>
+      <libraryPathEntry kind="5" linkType="2" path="ane/admob_all_in_one6.6.7.ane"/>
+      <libraryPathEntry kind="5" linkType="2" path="ane/Game Center.ane"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -54,10 +57,13 @@
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
     <buildTarget buildTargetName="device" iosSettingsVersion="2" isCurrent="true" platformId="com.adobe.flexide.multiplatform.ios.platform" provisioningFile="/Users/hufan/Documents/workspace/armorhu_git/DeadPixel/client/dead_pixel.mobileprovision" releasePackageType="ipa-app-store">
-      <multiPlatformSettings enabled="true" hideAneLibSymbols="0" includePlatformLibs="false" platformID="com.adobe.flexide.multiplatform.ios.platform" reducedSizePackaging="false" version="1"/>
       <airSettings airCertificatePath="/Users/hufan/Documents/workspace/cert/cert.p12" airTimestamp="true" anePathSet="true" version="1">
         <airExcludes/>
-        <anePaths/>
+        <anePaths>
+          <anePathEntry path="ane/wechat_2.ane"/>
+          <anePathEntry path="ane/admob_all_in_one6.6.7.ane"/>
+          <anePathEntry path="ane/Game Center.ane"/>
+        </anePaths>
         <newLaunchParams/>
         <modifiedLaunchParams/>
         <newPackagingParams>
@@ -65,12 +71,16 @@
         </newPackagingParams>
         <modifiedPackagingParams/>
       </airSettings>
+      <multiPlatformSettings enabled="true" hideAneLibSymbols="0" includePlatformLibs="false" platformID="com.adobe.flexide.multiplatform.ios.platform" reducedSizePackaging="false" version="1"/>
       <actionScriptSettings version="1"/>
     </buildTarget>
     <buildTarget airDownloadURL="" androidSettingsVersion="2" buildTargetName="device" isCurrent="true" platformId="com.adobe.flexide.multiplatform.android.platform">
-      <airSettings airCertificatePath="" airTimestamp="true" anePathSet="false" version="1">
+      <airSettings airCertificatePath="" airTimestamp="true" anePathSet="true" version="1">
         <airExcludes/>
-        <anePaths/>
+        <anePaths>
+          <anePathEntry path="ane/wechat_2.ane"/>
+          <anePathEntry path="ane/admob_all_in_one6.6.7.ane"/>
+        </anePaths>
         <newLaunchParams/>
         <modifiedLaunchParams/>
         <newPackagingParams/>

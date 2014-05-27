@@ -63,7 +63,7 @@ package com.agame.deadpixel.screen.result
 			lb.y=4 * Game.stageHeight / 5;
 			addChild(lb);
 
-			shareLabel=new LabelButton(Lang(TID.tid_share), 128, 64, Game.L);
+			shareLabel=new LabelButton(Lang(TID.tid_button_flaunt), 128, 64, Game.L);
 			shareLabel.pivotX=shareLabel.width / 2;
 			shareLabel.x=1 * Game.stageWidth / 5;
 			lb.addChild(shareLabel);
@@ -95,9 +95,9 @@ package com.agame.deadpixel.screen.result
 			{
 				Game.showScreen(playScreenID);
 			}
-			else if (targetName == Lang(TID.tid_share))
+			else if (targetName == Lang(TID.tid_button_flaunt))
 			{
-				Game.share();
+				Game.shareScreenShot('坑爹的游戏，眼睛找都瞎了...', '找坏点！！');
 			}
 		}
 

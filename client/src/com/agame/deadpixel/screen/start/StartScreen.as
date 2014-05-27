@@ -2,16 +2,21 @@ package com.agame.deadpixel.screen.start
 {
 	import com.agame.deadpixel.Game;
 	import com.agame.deadpixel.LabelButton;
+	import com.agame.deadpixel.ane.GameCenterProxy;
 	import com.agame.deadpixel.screen.play.classic.ClassicScreen;
 	import com.agame.deadpixel.screen.play.sixty.SixtyScreen;
 	import com.agame.deadpixel.screen.play.speed.SpeedScreen;
 	import com.agame.deadpixel.text.Lang;
 	import com.agame.deadpixel.text.TID;
-	
+	import com.amgame.utils.AppstoreUtils;
+
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+
 	import feathers.controls.LayoutGroup;
 	import feathers.controls.Screen;
 	import feathers.layout.VerticalLayout;
-	
+
 	import starling.text.TextField;
 
 	/**
@@ -36,30 +41,53 @@ package com.agame.deadpixel.screen.start
 			var title:TextField=Game.createTextfiled(Lang(TID.tid_title_deadpixel), Game.NON_SCALE_STAGE_WIDTH, 128, 100, Game.red);
 			addChild(title);
 
-			var yOffset:Number=title.height + 160 * Game.scale;
+			var yOffset:Number=title.height + 110 * Game.scale;
 			createModeLabel(TID.tid_classic, startClassic, 0, yOffset);
 			yOffset+=createModeLabel(TID.tid_speed, startSpeed, Game.stageWidth / 2, yOffset).height;
 //			yOffset+=createModeLabel(TID.tid_sixty, startSixty, Game.stageWidth / 4, yOffset).height;
 
 			var vLayout:VerticalLayout=new VerticalLayout;
+			vLayout.gap=20 * Game.scale;
 			_menuGroup=new LayoutGroup;
 			_menuGroup.layout=vLayout;
-			_menuGroup.y=yOffset + 160 * Game.scale;
-			_menuGroup.height=Game.stageHeight - _menuGroup.y;
+			_menuGroup.y=yOffset + 110 * Game.scale;
+			_menuGroup.height=Game.stageHeight - _menuGroup.y - Game.admobSize;
 			addChild(_menuGroup);
 
 			var color:uint=Game.grey2;
 			var btnLeaderBoard:LabelButton=new LabelButton(Lang(TID.tid_leaderborad), Game.NON_SCALE_STAGE_WIDTH, 64, 48, color);
+			btnLeaderBoard.tiggerHandler=showLeaderBoard;
 			_menuGroup.addChild(btnLeaderBoard);
 
 			var btnShared:LabelButton=new LabelButton(Lang(TID.tid_share), Game.NON_SCALE_STAGE_WIDTH, 64, 48, color);
+			btnShared.tiggerHandler=sharedHandler;
 			_menuGroup.addChild(btnShared);
 
 			var btnRatingMe:LabelButton=new LabelButton(Lang(TID.tid_rate), Game.NON_SCALE_STAGE_WIDTH, 64, 48, color);
+			btnRatingMe.tiggerHandler=function():void
+			{
+				navigateToURL(new URLRequest(AppstoreUtils.getAppRateURL(Game.APP_ID)));
+			}
 			_menuGroup.addChild(btnRatingMe);
 
 			var btnMoreGames:LabelButton=new LabelButton(Lang(TID.tid_moreGames), Game.NON_SCALE_STAGE_WIDTH, 64, 48, color);
+			btnMoreGames.tiggerHandler=function():void
+			{
+				navigateToURL(new URLRequest(AppstoreUtils.getArmorPage()));
+			}
 			_menuGroup.addChild(btnMoreGames);
+		}
+
+		private function showLeaderBoard():void
+		{
+			// TODO Auto Generated method stub
+			GameCenterProxy.requestLeaderboardCategories();
+		}
+
+		private function sharedHandler():void
+		{
+			// TODO Auto Generated method stub
+			Game.share();
 		}
 
 		private function startClassic():void
